@@ -44,32 +44,6 @@ float distance_cycle(vector<vector<int>> &graph, multimap<float,float> &points)
     return distance;
 }
 
-vector<vector<int>> changed_three(vector<vector<int>> graph)
-{
-    for(int c = 0; c<3; c++)
-    {
-        int random_vertex = rand() % graph.size();
-        int random_dest = rand() % graph.size();
-        
-        //making sure it doesn't lead to itself:
-        while (random_dest == random_vertex)
-        {
-            random_dest = rand() % graph.size();
-        }
-        
-        for(int j = 0; j<graph.size(); j++)
-        {
-            if(graph[random_vertex][j] == 1)
-            {
-                graph[random_vertex][j] = 0;
-            }
-        }
-        graph[random_vertex][random_dest] = 1;
-    }
-    
-    return graph;
-}
-
 bool still_hamiltonian(vector<vector<int>> &graph)
 {
     //check that there's ONLY one 1 per column
@@ -90,6 +64,42 @@ bool still_hamiltonian(vector<vector<int>> &graph)
     }
     return true;
 }
+
+vector<vector<int>> changed_three(vector<vector<int>> graph)
+{
+
+    for(int c = 0; c<2; c++)
+    {
+        int random_vertex = rand() % graph.size();
+        int random_dest = rand() % graph.size();
+        
+        //making sure it doesn't lead to itself:
+        while (random_dest == random_vertex)
+        {
+            random_dest = rand() % graph.size();
+        }
+        
+        for(int j = 0; j<graph.size(); j++)
+        {
+            if(graph[random_vertex][j] == 1)
+            {
+                graph[random_vertex][j] = 0;
+            }
+        }
+        graph[random_vertex][random_dest] = 1;
+        
+        if(c>0 && !still_hamiltonian(graph))
+        {
+            cout<<c<<endl;
+            c--;
+        }
+    }
+    
+
+    return graph;
+}
+
+
 
 
 int main() {
@@ -127,6 +137,7 @@ int main() {
 
     //getting the distance
     float distance = distance_cycle(graph, points);
+    //cout<<"init"<<distance<<endl;
     float new_distance = distance;
     //cout<< distance<<endl;
     
@@ -135,20 +146,19 @@ int main() {
     {
         graph = changed_three(graph);
 
-        if (still_hamiltonian(graph))
+        for(int i = 0; i<n; i++)
         {
-            for(int i = 0; i<n; i++)
+            for(int j = 0; j<n; j++)
             {
-                for(int j = 0; j<n; j++)
-                {
-        
-                    cout<<graph[i][j]<<" ";
-                }
-                cout<<endl;
+
+                cout<<graph[i][j]<<" ";
             }
-            new_distance = distance_cycle(graph, points);
+            cout<<endl;
         }
-        
+        cout<<endl;
+
+        new_distance = distance_cycle(graph, points);
+        //cout<<new_distance<<endl;
         if (new_distance < distance)
         {
             distance = new_distance;
@@ -157,7 +167,7 @@ int main() {
         count ++;
     }
     cout<<"The optimal length is:::"<<endl;
-    cout<<new_distance<<endl;
+    cout<<distance<<endl;
     
 //    multimap<float, float>::iterator itr;
 //    for (itr = points.begin(); itr != points.end(); ++itr)
