@@ -96,31 +96,48 @@ int main() {
     vector<int> vec(n);
     //our initial guess-- ordered by x-coord
     std::iota (std::begin(vec), std::end(vec), 0);
-    for(int i= 0; i<n; i++)
-    {
-        cout<<vec[i]<<" ";
-    }
+//    for(int i= 0; i<n; i++)
+//    {
+//        cout<<vec[i]<<" ";
+//    }
     
     
     
     //getting the distance
     float distance = distance_vec(vec, points);
     //cout<<"init"<<distance<<endl;
-    //float new_distance = distance;
-    
-    
-    
+    float new_distance = distance;
+    int count = 0;
+    while(count< pow(n,2))
+    {
+        int random_place1 = rand() % vec.size();
+        int random_place2 = rand() % vec.size();
+        swap(vec[random_place1], vec[random_place2]);
+        new_distance = distance_vec(vec, points);
+        if (new_distance<distance)
+        {
+            //cout<<"AHA"<<endl;
+            distance = new_distance;
+            count = 0;
+        }
+        else //swap them back
+        {
+            swap(vec[random_place1], vec[random_place2]);
+        }
+        //cout<<count<<endl;
+        count++;
+    }
     
     cout<<"The optimal length is:::"<<endl;
     cout<<distance<<endl;
     
-    multimap<float, float>::iterator itr;
-    for (itr = points.begin(); itr != points.end(); ++itr)
-    {
-            cout << '\t' << itr->first << '\t' << itr->second
-                 << '\n';
-        }
-    
+//    multimap<float, float>::iterator itr;
+//    for (itr = points.begin(); itr != points.end(); ++itr)
+//    {
+//            cout << '\t' << itr->first << '\t' << itr->second
+//                 << '\n';
+//        }
+//
     //    for(int i = 0; i<n; i++)
     //    {
     //        for(int j = 0; j<n; j++)
