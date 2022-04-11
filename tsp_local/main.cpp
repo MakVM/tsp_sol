@@ -44,115 +44,35 @@ float distance_cycle(vector<vector<int>> &graph, multimap<float,float> &points)
     return distance;
 }
 
-bool still_hamiltonian(vector<vector<int>> &graph)
+float distance_vec(vector<int> &vec, multimap<float,float> &points)
 {
-    //check that there's ONLY one 1 per column
-    for(int j = 0; j<graph.size(); j++)
+    float distance = 0;
+    for(int i = 0; i<vec.size()-1; i++)
     {
-        int check = 0;
-        for(int i = 0; i<graph.size(); i++)
-        {
-            if(graph[i][j] == 1)
-            {
-                check ++;
-            }
-        }
-        if(check != 1)
-        {
-            return false;
-        }
+
+        auto point1 = points.begin();
+        auto point2 = points.begin();
+        advance(point1,vec[i]);
+        advance(point2,vec[i+1]);
+        
+        float x1 =point1->first;
+        float y1 =point1->second;
+        float x2 =point2->first;
+        float y2 =point2->second;
+        distance += dist(x1,y1,x2,y2);
     }
-    return true;
+    auto point1 = points.begin();
+    auto point2 = points.begin();
+    advance(point1,vec[0]);
+    advance(point2,vec[vec.size()-1]);
+    float x1 =point1->first;
+    float y1 =point1->second;
+    float x2 =point2->first;
+    float y2 =point2->second;
+    distance += dist(x1,y1,x2,y2);
+    
+    return distance;
 }
-
-//vector<vector<int>> changed_three(vector<vector<int>> graph)
-//{
-//
-//    for(int c = 0; c<2; c++)
-//    {
-//        int random_vertex = rand() % graph.size();
-//        int random_dest = rand() % graph.size();
-//
-//        //making sure it doesn't lead to itself:
-//        while (random_dest == random_vertex)
-//        {
-//            random_dest = rand() % graph.size();
-//        }
-//
-//        for(int j = 0; j<graph.size(); j++)
-//        {
-//            if(graph[random_vertex][j] == 1)
-//            {
-//                graph[random_vertex][j] = 0;
-//            }
-//        }
-//        graph[random_vertex][random_dest] = 1;
-//
-//        if(c>0 && !still_hamiltonian(graph))
-//        {
-//            cout<<c<<endl;
-//            c--;
-//        }
-//    }
-//
-//
-//    return graph;
-//}
-
-vector<vector<int>> changed_three(vector<vector<int>> graph)
-{
-
-    int random_vertex = rand() % graph.size();
-    int random_dest = rand() % graph.size();
-
-    //making sure it doesn't lead to itself:
-    while (random_dest == random_vertex)
-    {
-        random_dest = rand() % graph.size();
-    }
-    
-    int input;
-    for(int j = 0; j<graph.size(); j++)
-    {
-        if(graph[random_vertex][j] == 1)
-        {
-            input = j;
-            graph[random_vertex][input] = 0;
-        }
-    }
-    graph[random_vertex][random_dest] = 1;
-
-    int vertex2 = random_vertex;
-    for(int i = 0; i<graph.size(); i++)
-    {
-        if(graph[i][random_dest] == 1 && i !=random_vertex)
-        {
-            vertex2 = i;
-            graph[vertex2][random_dest] = 0;
-        }
-    }
-
-    int random_dest2 = rand() % graph.size();
-    while (random_dest2 == vertex2)
-    {
-        random_dest2 = rand() % graph.size();
-    }
-    graph[vertex2][random_dest2] = 1;
-    
-    for(int i = 0; i<graph.size(); i++)
-    {
-        if(graph[i][random_dest2] == 1 && i != vertex2)
-        {
-            vertex2 = i;
-            graph[vertex2][random_dest2] = 0;
-        }
-    }
-    graph[vertex2][input] = 1;
-    
-    return graph;
-}
-    
-
 
 
 int main() {
@@ -172,62 +92,34 @@ int main() {
         
     } //automatically ordered by x-coordinate
     
-    vector<vector<int>> graph(n, vector<int>(n, 0));
-    
-    
-    //initial guess
-    graph[n-1][0] = 1;
-    for(int i = 0; i<n-1; i++)
-    {
-        for(int j = 0; j<n; j++)
-        {
-            if(j == i+1)
-            {
-                graph[i][j] = 1;
-            }
-        }
-    }
 
+    vector<int> vec(n);
+    //our initial guess-- ordered by x-coord
+    std::iota (std::begin(vec), std::end(vec), 0);
+    for(int i= 0; i<n; i++)
+    {
+        cout<<vec[i]<<" ";
+    }
+    
+    
+    
     //getting the distance
-    float distance = distance_cycle(graph, points);
+    float distance = distance_vec(vec, points);
     //cout<<"init"<<distance<<endl;
-    float new_distance = distance;
-    //cout<< distance<<endl;
+    //float new_distance = distance;
     
-    int count = 0;
-    while(count < pow(n,2))
-    {
-        graph = changed_three(graph);
-
-        for(int i = 0; i<n; i++)
-        {
-            for(int j = 0; j<n; j++)
-            {
-
-                cout<<graph[i][j]<<" ";
-            }
-            cout<<endl;
-        }
-        cout<<endl;
-
-        new_distance = distance_cycle(graph, points);
-        //cout<<new_distance<<endl;
-        if (new_distance < distance)
-        {
-            distance = new_distance;
-            count = 0;
-        }
-        count ++;
-    }
+    
+    
+    
     cout<<"The optimal length is:::"<<endl;
     cout<<distance<<endl;
     
-//    multimap<float, float>::iterator itr;
-//    for (itr = points.begin(); itr != points.end(); ++itr)
-//    {
-//            cout << '\t' << itr->first << '\t' << itr->second
-//                 << '\n';
-//        }
+    multimap<float, float>::iterator itr;
+    for (itr = points.begin(); itr != points.end(); ++itr)
+    {
+            cout << '\t' << itr->first << '\t' << itr->second
+                 << '\n';
+        }
     
     //    for(int i = 0; i<n; i++)
     //    {
