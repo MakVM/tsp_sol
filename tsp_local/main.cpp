@@ -9,14 +9,39 @@
 using namespace std;
 
 
-float distance(pair<float,float> &p1, pair<float,float> &p2)
+float dist(float &x1, float &y1, float &x2, float &y2)
 {
     float dist;
     
-    dist = sqrt( pow((p1.first - p2.first),2) + pow((p1.second - p2.second),2) );
+    dist = sqrt( pow((x1-x2),2) + pow((y1-y2),2) );
     return dist;
 }
 
+float distance_cycle(vector<vector<int>> &graph, multimap<float,float> &points)
+{
+    float distance = 0;
+    for(int i = 0; i<graph.size(); i++)
+    {
+        for(int j = 0; j<graph.size(); j++)
+        {
+            if(graph[i][j] == 1)
+            {
+                auto point1 = points.begin();
+                auto point2 = points.begin();
+                advance(point1,i);
+                advance(point2,j);
+                
+                float x1 =point1->first;
+                float y1 =point1->second;
+                float x2 =point2->first;
+                float y2 =point2->second;
+                distance += dist(x1,y1,x2,y2);
+            }
+        }
+    }
+    
+    return distance;
+}
 
 int main() {
 
@@ -39,7 +64,7 @@ int main() {
     
     
     //initial guess
-    graph[n][0] = 1;
+    graph[n-1][0] = 1;
     for(int i = 0; i<n-1; i++)
     {
         for(int j = 0; j<n; j++)
@@ -50,26 +75,10 @@ int main() {
             }
         }
     }
-    
-   
-    auto point1 = points.begin();
-    auto point2 = points.begin();
+
     //getting the distance
-    float distance = 0;
-    for(int i = 0; i<n; i++)
-    {
-        for(int j = 0; j<n; j++)
-        {
-            if(graph[i][j])
-            {
-                advance(point1,i);
-                advance(point2,j);
-                distance +=
-            }
-        }
-    }
-    
-    
+    float distance = distance_cycle(graph, points);
+    cout<< distance<<endl;
     
     
     
@@ -79,6 +88,16 @@ int main() {
 //            cout << '\t' << itr->first << '\t' << itr->second
 //                 << '\n';
 //        }
+    
+    //    for(int i = 0; i<n; i++)
+    //    {
+    //        for(int j = 0; j<n; j++)
+    //        {
+    //
+    //            cout<<graph[i][j]<<" ";
+    //        }
+    //        cout<<endl;
+    //    }
     
     
     //cout distance(length of cycle) 0
