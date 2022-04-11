@@ -96,16 +96,10 @@ int main() {
     vector<int> vec(n);
     //our initial guess-- ordered by x-coord
     std::iota (std::begin(vec), std::end(vec), 0);
-//    for(int i= 0; i<n; i++)
-//    {
-//        cout<<vec[i]<<" ";
-//    }
-    
-    
-    
+
     //getting the distance
     float distance = distance_vec(vec, points);
-    //cout<<"init"<<distance<<endl;
+
     float new_distance = distance;
     int count = 0;
     while(count< pow(n,2))
@@ -116,7 +110,7 @@ int main() {
         new_distance = distance_vec(vec, points);
         if (new_distance<distance)
         {
-            //cout<<"AHA"<<endl;
+
             distance = new_distance;
             count = 0;
         }
@@ -124,7 +118,7 @@ int main() {
         {
             swap(vec[random_place1], vec[random_place2]);
         }
-        //cout<<count<<endl;
+
         count++;
     }
     
@@ -134,26 +128,6 @@ int main() {
         cout<<vec[i]<<" ";
     }
     
-//    multimap<float, float>::iterator itr;
-//    for (itr = points.begin(); itr != points.end(); ++itr)
-//    {
-//            cout << '\t' << itr->first << '\t' << itr->second
-//                 << '\n';
-//        }
-//
-    //    for(int i = 0; i<n; i++)
-    //    {
-    //        for(int j = 0; j<n; j++)
-    //        {
-    //
-    //            cout<<graph[i][j]<<" ";
-    //        }
-    //        cout<<endl;
-    //    }
-    
-    
-    //cout distance(length of cycle) 0
-    //vertices numbered in the cycle??
     
     return 0;
 }
