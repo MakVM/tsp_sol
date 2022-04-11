@@ -128,8 +128,11 @@ int main() {
         count++;
     }
     
-    cout<<"The optimal length is:::"<<endl;
-    cout<<distance<<endl;
+    cout<<distance<< " "<< 0<<endl;
+    for(int i = 0; i<n; i++)
+    {
+        cout<<vec[i]<<" ";
+    }
     
 //    multimap<float, float>::iterator itr;
 //    for (itr = points.begin(); itr != points.end(); ++itr)
