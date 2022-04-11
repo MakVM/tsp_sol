@@ -18,31 +18,6 @@ float dist(float &x1, float &y1, float &x2, float &y2)
     return dist;
 }
 
-float distance_cycle(vector<vector<int>> &graph, multimap<float,float> &points)
-{
-    float distance = 0;
-    for(int i = 0; i<graph.size(); i++)
-    {
-        for(int j = 0; j<graph.size(); j++)
-        {
-            if(graph[i][j] == 1)
-            {
-                auto point1 = points.begin();
-                auto point2 = points.begin();
-                advance(point1,i);
-                advance(point2,j);
-                
-                float x1 =point1->first;
-                float y1 =point1->second;
-                float x2 =point2->first;
-                float y2 =point2->second;
-                distance += dist(x1,y1,x2,y2);
-            }
-        }
-    }
-    
-    return distance;
-}
 
 float distance_vec(vector<int> &vec, multimap<float,float> &points)
 {
