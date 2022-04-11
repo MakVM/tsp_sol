@@ -65,40 +65,93 @@ bool still_hamiltonian(vector<vector<int>> &graph)
     return true;
 }
 
+//vector<vector<int>> changed_three(vector<vector<int>> graph)
+//{
+//
+//    for(int c = 0; c<2; c++)
+//    {
+//        int random_vertex = rand() % graph.size();
+//        int random_dest = rand() % graph.size();
+//
+//        //making sure it doesn't lead to itself:
+//        while (random_dest == random_vertex)
+//        {
+//            random_dest = rand() % graph.size();
+//        }
+//
+//        for(int j = 0; j<graph.size(); j++)
+//        {
+//            if(graph[random_vertex][j] == 1)
+//            {
+//                graph[random_vertex][j] = 0;
+//            }
+//        }
+//        graph[random_vertex][random_dest] = 1;
+//
+//        if(c>0 && !still_hamiltonian(graph))
+//        {
+//            cout<<c<<endl;
+//            c--;
+//        }
+//    }
+//
+//
+//    return graph;
+//}
+
 vector<vector<int>> changed_three(vector<vector<int>> graph)
 {
 
-    for(int c = 0; c<2; c++)
+    int random_vertex = rand() % graph.size();
+    int random_dest = rand() % graph.size();
+
+    //making sure it doesn't lead to itself:
+    while (random_dest == random_vertex)
     {
-        int random_vertex = rand() % graph.size();
-        int random_dest = rand() % graph.size();
-        
-        //making sure it doesn't lead to itself:
-        while (random_dest == random_vertex)
-        {
-            random_dest = rand() % graph.size();
-        }
-        
-        for(int j = 0; j<graph.size(); j++)
-        {
-            if(graph[random_vertex][j] == 1)
-            {
-                graph[random_vertex][j] = 0;
-            }
-        }
-        graph[random_vertex][random_dest] = 1;
-        
-        if(c>0 && !still_hamiltonian(graph))
-        {
-            cout<<c<<endl;
-            c--;
-        }
+        random_dest = rand() % graph.size();
     }
     
+    int input;
+    for(int j = 0; j<graph.size(); j++)
+    {
+        if(graph[random_vertex][j] == 1)
+        {
+            input = j;
+            graph[random_vertex][input] = 0;
+        }
+    }
+    graph[random_vertex][random_dest] = 1;
 
+    int vertex2 = random_vertex;
+    for(int i = 0; i<graph.size(); i++)
+    {
+        if(graph[i][random_dest] == 1 && i !=random_vertex)
+        {
+            vertex2 = i;
+            graph[vertex2][random_dest] = 0;
+        }
+    }
+
+    int random_dest2 = rand() % graph.size();
+    while (random_dest2 == vertex2)
+    {
+        random_dest2 = rand() % graph.size();
+    }
+    graph[vertex2][random_dest2] = 1;
+    
+    for(int i = 0; i<graph.size(); i++)
+    {
+        if(graph[i][random_dest2] == 1 && i != vertex2)
+        {
+            vertex2 = i;
+            graph[vertex2][random_dest2] = 0;
+        }
+    }
+    graph[vertex2][input] = 1;
+    
     return graph;
 }
-
+    
 
 
 
