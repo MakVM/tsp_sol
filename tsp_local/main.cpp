@@ -78,7 +78,7 @@ int main() {
 
     //getting the distance
     float distance = distance_cycle(graph, points);
-    cout<< distance<<endl;
+    //cout<< distance<<endl;
     
     
     
