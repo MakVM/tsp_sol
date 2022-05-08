@@ -12,6 +12,8 @@
 #include <fstream>
 
 
+
+
 using namespace std;
 
 
@@ -57,37 +59,50 @@ float distance_vec(vector<int> &vec, multimap<float,float> &points)
 
 int main() {
 
-    FILE * my_data;
-    my_data = fopen("data.txt", "wb");
-    if (my_data == NULL)
-    {
-        perror("Opening Error");
-        return 0;
-    }
+//    FILE * my_data;
+//    my_data = fopen("data.txt", "wb");
+//    if (my_data == NULL)
+//    {
+//        perror("Opening Error");
+//        return 0;
+//    }
+    ofstream data;
+    data.open ("my_data.txt");
+    data << "Test"<< "          "<<"MVS"<< "          "<<"VMM"<<"          "<<"Deviation\n";
+    //10 spaces
     
     std::ifstream MV_data("tsp_MV.txt");
-    std::string line_name;
-    std::string line_res;
-    while (std::getline(MV_data, line_name))
+    
+    string name;
+    float res;
+    int n = 0;
+    for(std::string line; getline( MV_data, line );)
     {
-        std::istringstream iss(line_name);
-        string name;
-        if (!(iss >> name)) {
-            cout<<"flop"<<endl;
-            break;
-        } // error
-        // process pair (a,b)
-        cout<<name<<endl;
+        //cout<<"line: "<<n<<" "<<line<<endl;
+        if(n%2 == 0) //even -- string
+        {
+            name = line;
+            //cout<<"name: "<<name<<endl;
+            data<<line<<" ";
+        }
+        else //odd -- number
+        {
+            res = stof(line);
+            //res= ::atof(line.c_str());
+            //cout<<"real: "<<line<<endl;
+            //res = std::stod(line);
+            //cout<<"res: "<<res<<endl;
+            data<<line<<" ";
+            data <<"\n"; //!!!!
+        }
         
-//        std::getline(MV_data, line_res);
-//        std::istringstream iss2(line_res);
-//        int res;
-//        if (!(iss2 >> res)) { break; } // error
-//        // process pair (a,b)
-//        cout<<res<<endl;
+        n++;
     }
     
-    fclose(my_data);
+    
+    //fclose(my_data);
+
+    data.close();
     cout<<"nice"<<endl;
     
     
