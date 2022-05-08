@@ -68,32 +68,34 @@ int main() {
     
     string name;
     float res;
-    float my_res;
+    float my_res = 0;
     
-    int count = 0;
+    int file_counter = 0;
     for(std::string line; getline( MV_data, line );)
     {
         
-            if(count%2 == 0) //even -- string
-            {
-                name = line;
-                name.pop_back();
-                data<<line<<" ";
-                
-                std::ifstream input;
-                input.open (name, std::ifstream::in);
-                if (!input.is_open())
-                {
-                        cerr << "Could not open the file - '"
-                             << name << "'" << endl;
-                        return EXIT_FAILURE;
-                }
-                
-                int n;
-                input>>n;
-                //cout<<n<<endl;
-                //we need a shortest possible route that connects every vertex
+        if(file_counter%2 == 0) //even -- string
+        {
+            name = line;
+            name.pop_back();
+            data<<line<<" ";
             
+            std::ifstream input;
+            input.open (name, std::ifstream::in);
+            if (!input.is_open())
+            {
+                    cerr << "Could not open the file - '"
+                         << name << "'" << endl;
+                    return EXIT_FAILURE;
+            }
+            
+            int n;
+            input>>n;
+            //cout<<n<<endl;
+            //we need a shortest possible route that connects every vertex
+            
+            if (n<200) //this cycle
+            {
                 float x,y;
                 multimap<float,float> points;
             
@@ -136,25 +138,27 @@ int main() {
                 }
             
                 my_res = distance;
-                //cout<<my_res<<endl;
-                input.close();
-                //get my_res
-            }
-            else //odd -- number
-            {
-                res = stof(line);
-                data<<line<<" ";
-                data<<my_res<<"         ";
-                
-                float dev = abs((my_res - res)/res * 100);
-                data<<dev;
-                data <<"\n";
-            }
+            } //ENDS here
+
+            //cout<<my_res<<endl;
+            input.close();
+            //get my_res
+        }
+        else //odd -- number
+        {
+            res = stof(line);
+            data<<line<<"         ";
+            data<<my_res<<"         ";
             
-            
-            
-            count++;
+            float dev = abs((my_res - res)/res * 100);
+            data<<dev;
+            data <<"\n";
+        }
         
+        
+        
+        file_counter++;
+    
     }
     
     data.close();

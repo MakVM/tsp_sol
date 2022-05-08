@@ -1,2 +1,0 @@
-Test          MVS          VMM          Deviation (%)
-tsp_100_1  24373.395  32941.1         35.1521
