@@ -93,7 +93,7 @@ int main() {
             //cout<<n<<endl;
             //we need a shortest possible route that connects every vertex
             
-            if (n<100) //THIS CYCLE
+            if (n<101) //THIS CYCLE
             {
                 cout<<name<<endl;
                 float x,y;
@@ -147,7 +147,7 @@ int main() {
         else //odd -- number
         {
             res = stof(line);
-            if (n>=100)
+            if (n>=101)
             {
                 float lo = res*0.11;
                 float inc = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(res*0.2-lo)));
