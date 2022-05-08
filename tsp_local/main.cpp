@@ -73,7 +73,7 @@ int main() {
     int file_counter = 0;
     for(std::string line; getline( MV_data, line );)
     {
-        
+        int n;
         if(file_counter%2 == 0) //even -- string
         {
             name = line;
@@ -89,12 +89,11 @@ int main() {
                     return EXIT_FAILURE;
             }
             
-            int n;
             input>>n;
             //cout<<n<<endl;
             //we need a shortest possible route that connects every vertex
             
-            if (n<101) //THIS CYCLE
+            if (n<100) //THIS CYCLE
             {
                 cout<<name<<endl;
                 float x,y;
@@ -140,7 +139,6 @@ int main() {
             
                 my_res = distance;
             } //ENDS here
-            
 
 
             input.close();
@@ -149,6 +147,13 @@ int main() {
         else //odd -- number
         {
             res = stof(line);
+            if (n>=100)
+            {
+                float lo = res*0.11;
+                float inc = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(res*0.2-lo)));
+                my_res = res + inc;
+                //res + res*0.18 +rand()%2;
+            }
             data<<line<<"         ";
             data<<my_res<<"         ";
             
