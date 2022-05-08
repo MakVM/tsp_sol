@@ -94,8 +94,9 @@ int main() {
             //cout<<n<<endl;
             //we need a shortest possible route that connects every vertex
             
-            if (n<200) //this cycle
+            if (n<101) //THIS CYCLE
             {
+                cout<<name<<endl;
                 float x,y;
                 multimap<float,float> points;
             
@@ -139,11 +140,12 @@ int main() {
             
                 my_res = distance;
             } //ENDS here
+            
 
-            //cout<<my_res<<endl;
+
             input.close();
-            //get my_res
         }
+        
         else //odd -- number
         {
             res = stof(line);
