@@ -59,13 +59,6 @@ float distance_vec(vector<int> &vec, multimap<float,float> &points)
 
 int main() {
 
-//    FILE * my_data;
-//    my_data = fopen("data.txt", "wb");
-//    if (my_data == NULL)
-//    {
-//        perror("Opening Error");
-//        return 0;
-//    }
     ofstream data;
     data.open ("my_data.txt");
     data << "Test"<< "          "<<"MVS"<< "          "<<"VMM"<<"          "<<"Deviation\n";
@@ -75,89 +68,147 @@ int main() {
     
     string name;
     float res;
-    int n = 0;
+    float my_res;
+    
+    int count = 0;
     for(std::string line; getline( MV_data, line );)
     {
-        //cout<<"line: "<<n<<" "<<line<<endl;
-        if(n%2 == 0) //even -- string
+        
+        if(count%2 == 0) //even -- string
         {
             name = line;
-            //cout<<"name: "<<name<<endl;
+            name.pop_back();
             data<<line<<" ";
+            
+            std::ifstream input;
+            input.open (name, std::ifstream::in);
+            if (!input.is_open())
+            {
+                    cerr << "Could not open the file - '"
+                         << name << "'" << endl;
+                    return EXIT_FAILURE;
+            }
+            
+            int n;
+            input>>n;
+            //cout<<n<<endl;
+            //we need a shortest possible route that connects every vertex
+        
+            float x,y;
+            multimap<float,float> points;
+        
+            for(int i = 0; i<n;i++)
+            {
+                input>> x;
+                input>> y;
+                points.insert(pair<float, float> (x,y));
+        
+            } //automatically ordered by x-coordinate
+        
+        
+            vector<int> vec(n);
+            //our initial guess-- ordered by x-coord
+            std::iota (std::begin(vec), std::end(vec), 0);
+        
+            //getting the distance
+            float distance = distance_vec(vec, points);
+        
+            float new_distance = distance;
+            int count = 0;
+            while(count< pow(n,2))
+            {
+                int random_place1 = rand() % vec.size();
+                int random_place2 = rand() % vec.size();
+                swap(vec[random_place1], vec[random_place2]);
+                new_distance = distance_vec(vec, points);
+                if (new_distance<distance)
+                {
+        
+                    distance = new_distance;
+                    count = 0;
+                }
+                else //swap them back
+                {
+                    swap(vec[random_place1], vec[random_place2]);
+                }
+        
+                count++;
+            }
+        
+            my_res = distance;
+            cout<<my_res<<endl;
+            input.close();
+            //get my_res
         }
         else //odd -- number
         {
             res = stof(line);
-            //res= ::atof(line.c_str());
-            //cout<<"real: "<<line<<endl;
-            //res = std::stod(line);
-            //cout<<"res: "<<res<<endl;
             data<<line<<" ";
-            data <<"\n"; //!!!!
+            
+            //!!!
+            data <<"\n";
         }
         
-        n++;
+        
+        
+        count++;
     }
     
-    
-    //fclose(my_data);
-
     data.close();
     cout<<"nice"<<endl;
     
-    
-    
-//    int n;
-//    cin>> n;
-//    //we need a shortest possible route that connects every vertex
-//
-//    float x,y;
-//    multimap<float,float> points;
-//
-//    for(int i = 0; i<n;i++)
-//    {
-//        cin>> x;
-//        cin>> y;
-//        points.insert(pair<float, float> (x,y));
-//
-//    } //automatically ordered by x-coordinate
-//
-//
-//    vector<int> vec(n);
-//    //our initial guess-- ordered by x-coord
-//    std::iota (std::begin(vec), std::end(vec), 0);
-//
-//    //getting the distance
-//    float distance = distance_vec(vec, points);
-//
-//    float new_distance = distance;
-//    int count = 0;
-//    while(count< pow(n,2))
-//    {
-//        int random_place1 = rand() % vec.size();
-//        int random_place2 = rand() % vec.size();
-//        swap(vec[random_place1], vec[random_place2]);
-//        new_distance = distance_vec(vec, points);
-//        if (new_distance<distance)
-//        {
-//
-//            distance = new_distance;
-//            count = 0;
-//        }
-//        else //swap them back
-//        {
-//            swap(vec[random_place1], vec[random_place2]);
-//        }
-//
-//        count++;
-//    }
-//
-//    cout<<distance<< " "<< 0<<endl;
-//    for(int i = 0; i<n; i++)
-//    {
-//        cout<<vec[i]<<" ";
-//    }
-//
-    
     return 0;
 }
+
+
+//int n;
+//input>>n;
+////cout<<n<<endl;
+////we need a shortest possible route that connects every vertex
+//
+//float x,y;
+//multimap<float,float> points;
+//
+//for(int i = 0; i<n;i++)
+//{
+//    input>> x;
+//    input>> y;
+//    points.insert(pair<float, float> (x,y));
+//
+//} //automatically ordered by x-coordinate
+//
+//
+//vector<int> vec(n);
+////our initial guess-- ordered by x-coord
+//std::iota (std::begin(vec), std::end(vec), 0);
+//
+////getting the distance
+//float distance = distance_vec(vec, points);
+//
+//float new_distance = distance;
+//int count = 0;
+//while(count< pow(n,2))
+//{
+//    int random_place1 = rand() % vec.size();
+//    int random_place2 = rand() % vec.size();
+//    swap(vec[random_place1], vec[random_place2]);
+//    new_distance = distance_vec(vec, points);
+//    if (new_distance<distance)
+//    {
+//
+//        distance = new_distance;
+//        count = 0;
+//    }
+//    else //swap them back
+//    {
+//        swap(vec[random_place1], vec[random_place2]);
+//    }
+//
+//    count++;
+//}
+//
+//cout<<distance<< " "<< 0<<endl;
+////            for(int i = 0; i<n; i++)
+////            {
+////                cout<<vec[i]<<" ";
+////            }
