@@ -37,10 +37,10 @@ float distance_vec(vector<int> &vec, multimap<float,float> &points)
         advance(point1,vec[i]);
         advance(point2,vec[i+1]);
         
-        float x1 =point1->first;
-        float y1 =point1->second;
-        float x2 =point2->first;
-        float y2 =point2->second;
+        float x1 = point1->first;
+        float y1 = point1->second;
+        float x2 = point2->first;
+        float y2 = point2->second;
         distance += dist(x1,y1,x2,y2);
     }
     auto point1 = points.begin();
@@ -96,51 +96,92 @@ int main() {
             if (n<101) //THIS CYCLE
             {
                 cout<<name<<endl;
+                
                 float x,y;
-                multimap<float,float> points;
+                multimap<float,float> pointsX;
+                multimap<float,float> pointsY;
             
                 for(int i = 0; i<n;i++)
                 {
                     input>> x;
                     input>> y;
-                    points.insert(pair<float, float> (x,y));
+                    pointsX.insert(pair<float, float> (x,y));//automatically ordered by x-coordinate
+                    pointsY.insert(pair<float, float> (y,x));
+                    //automatically ordered by y-coordinate
             
-                } //automatically ordered by x-coordinate
-            
-            
-                vector<int> vec(n);
-                //our initial guess-- ordered by x-coord
-                std::iota (std::begin(vec), std::end(vec), 0);
-            
-                //getting the distance
-                float distance = distance_vec(vec, points);
-            
-                float new_distance = distance;
-                int count = 0;
-                while(count< pow(n,2))
-                {
-                    int random_place1 = rand() % vec.size();
-                    int random_place2 = rand() % vec.size();
-                    swap(vec[random_place1], vec[random_place2]);
-                    new_distance = distance_vec(vec, points);
-                    if (new_distance<distance)
-                    {
-            
-                        distance = new_distance;
-                        count = 0;
-                    }
-                    else //swap them back
-                    {
-                        swap(vec[random_place1], vec[random_place2]);
-                    }
-            
-                    count++;
                 }
             
+
+                vector<int> vec(n);
+                //our initial guess-- ordered by x-coord
+                //(1,2,3,4...,n) that's how we represent our edges
+                std::iota (std::begin(vec), std::end(vec), 0);
+
+                //getting the distance
+                float distance = distance_vec(vec, pointsX);
+
+                float new_distance = distance_vec(vec, pointsY);
+                int count = 0;
+                
+                if (new_distance>distance)
+                {
+                    while(count< pow(n,2))
+                    {
+                        int random_place1 = rand() % vec.size();
+                        int random_place2 = rand() % vec.size();
+                        swap(vec[random_place1], vec[random_place2]);
+                        new_distance = distance_vec(vec, pointsX);
+                        if (new_distance<distance)
+                        {
+
+                            distance = new_distance;
+                            count = 0;
+                        }
+                        else //swap them back
+                        {
+                            swap(vec[random_place1], vec[random_place2]);
+                        }
+
+                        count++;
+                    }
+                }
+                
+                else
+                {
+                    distance = new_distance;
+                    while(count< pow(n,2))
+                    {
+                        int random_place1 = rand() % vec.size();
+                        int random_place2 = rand() % vec.size();
+                        swap(vec[random_place1], vec[random_place2]);
+                        new_distance = distance_vec(vec, pointsY);
+                        if (new_distance<distance)
+                        {
+
+                            distance = new_distance;
+                            count = 0;
+                        }
+                        else //swap them back
+                        {
+                            swap(vec[random_place1], vec[random_place2]);
+                        }
+
+                        count++;
+                    }
+                }
+    
                 my_res = distance;
+                
+                
+                
+                
             } //ENDS here
 
 
+            
+            
+            
+            
             input.close();
         }
         
