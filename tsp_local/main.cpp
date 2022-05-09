@@ -25,36 +25,99 @@ float dist(float &x1, float &y1, float &x2, float &y2)
     return dist;
 }
 
+//
+//float distance_vec(vector<int> &vec, multimap<float,float> &points)
+//{
+//    float distance = 0;
+//    for(int i = 0; i<vec.size()-1; i++)
+//    {
+//
+//        auto point1 = points.begin();
+//        auto point2 = points.begin();
+//        advance(point1,vec[i]);
+//        advance(point2,vec[i+1]);
+//
+//        float x1 = point1->first;
+//        float y1 = point1->second;
+//        float x2 = point2->first;
+//        float y2 = point2->second;
+//        distance += dist(x1,y1,x2,y2);
+//    }
+//    auto point1 = points.begin();
+//    auto point2 = points.begin();
+//    advance(point1,vec[0]);
+//    advance(point2,vec[vec.size()-1]);
+//    float x1 =point1->first;
+//    float y1 =point1->second;
+//    float x2 =point2->first;
+//    float y2 =point2->second;
+//    distance += dist(x1,y1,x2,y2);
+//
+//    return distance;
+//}
 
-float distance_vec(vector<int> &vec, multimap<float,float> &points)
+float tsp(vector<vector<float> > adj)
 {
-    float distance = 0;
-    for(int i = 0; i<vec.size()-1; i++)
+    float sum = 0;
+    int counter = 0;
+    int j = 0, i = 0;
+    float min = INT_MAX;
+    map<float, float> visited; //index of vertex, visited?
+ 
+    //START
+    visited[0] = 1;
+    int road[adj.size()];
+ 
+    // Traverse the adjacency
+    while (i < adj.size() && j < adj[i].size())
     {
-
-        auto point1 = points.begin();
-        auto point2 = points.begin();
-        advance(point1,vec[i]);
-        advance(point2,vec[i+1]);
-        
-        float x1 = point1->first;
-        float y1 = point1->second;
-        float x2 = point2->first;
-        float y2 = point2->second;
-        distance += dist(x1,y1,x2,y2);
+ 
+        //matrix ended
+        if (counter >= adj[i].size() - 1)
+        {
+            break;
+        }
+ 
+        //PATH unvisited and min distance
+        if (j != i && (visited[j] == 0))
+        {
+            if (adj[i][j] < min)
+            {
+                min = adj[i][j];
+                road[counter] = j + 1;
+            }
+        }
+        j++; //move to the next column (to the next vertex from cur)
+ 
+        //CHECK all paths
+        if (j == adj[i].size()) //got to the last vertex reachable from cur
+        {
+            sum += min; //picked the min road
+            min = INT_MAX; //go back to this
+            visited[road[counter] - 1] = 1;
+            
+            j = 0;
+            i = road[counter] - 1;
+            counter++;
+        }
     }
-    auto point1 = points.begin();
-    auto point2 = points.begin();
-    advance(point1,vec[0]);
-    advance(point2,vec[vec.size()-1]);
-    float x1 =point1->first;
-    float y1 =point1->second;
-    float x2 =point2->first;
-    float y2 =point2->second;
-    distance += dist(x1,y1,x2,y2);
+ 
+    //WHILE cycle done, now we go back to the start
+    i = road[counter - 1] - 1;
+    for (j = 0; j < adj.size(); j++)
+    {
+        if ((i != j) && adj[i][j] < min)
+        {
+            min = adj[i][j];
+            road[counter] = j + 1;
+        }
+    }
     
-    return distance;
+    sum += min;
+ 
+    return sum;
 }
+
 
 
 int main() {
@@ -93,7 +156,7 @@ int main() {
             //cout<<n<<endl;
             //we need a shortest possible route that connects every vertex
             
-            if (n<101) //THIS CYCLE
+            if (n<5001) //THIS CYCLE
             {
                 cout<<name<<endl;
                 
@@ -101,86 +164,40 @@ int main() {
                 multimap<float,float> pointsX;
                 multimap<float,float> pointsY;
             
+                vector< pair<float,float> > points;
                 for(int i = 0; i<n;i++)
                 {
                     input>> x;
                     input>> y;
-                    pointsX.insert(pair<float, float> (x,y));//automatically ordered by x-coordinate
-                    pointsY.insert(pair<float, float> (y,x));
+//                    pointsX.insert(pair<float, float> (x,y));//automatically ordered by x-coordinate
+//                    pointsY.insert(pair<float, float> (y,x));
                     //automatically ordered by y-coordinate
+                    points.push_back(pair<float, float> (x,y));
             
                 }
             
 
-                vector<int> vec(n);
-                //our initial guess-- ordered by x-coord
-                //(1,2,3,4...,n) that's how we represent our edges
-                std::iota (std::begin(vec), std::end(vec), 0);
-
-                //getting the distance
-                float distance = distance_vec(vec, pointsX);
-
-                float new_distance = distance_vec(vec, pointsY);
-                int count = 0;
                 
-                if (new_distance>distance)
+                vector< vector<float> > adj(n, vector<float>(n));
+                for (int i = 0; i<n; i++)
                 {
-                    while(count< pow(n,2))
+                    for(int j = i; j<n; j++)
                     {
-                        int random_place1 = rand() % vec.size();
-                        int random_place2 = rand() % vec.size();
-                        swap(vec[random_place1], vec[random_place2]);
-                        new_distance = distance_vec(vec, pointsX);
-                        if (new_distance<distance)
+                        
+                        adj[i][j] = dist(points[i].first, points[i].second, points[j].first, points[j].second);
+                        adj[j][i] = adj[i][j];
+                        if (i ==j)
                         {
-
-                            distance = new_distance;
-                            count = 0;
+                            adj[i][j] = -1;
                         }
-                        else //swap them back
-                        {
-                            swap(vec[random_place1], vec[random_place2]);
-                        }
-
-                        count++;
+                        
                     }
                 }
                 
-                else
-                {
-                    distance = new_distance;
-                    while(count< pow(n,2))
-                    {
-                        int random_place1 = rand() % vec.size();
-                        int random_place2 = rand() % vec.size();
-                        swap(vec[random_place1], vec[random_place2]);
-                        new_distance = distance_vec(vec, pointsY);
-                        if (new_distance<distance)
-                        {
-
-                            distance = new_distance;
-                            count = 0;
-                        }
-                        else //swap them back
-                        {
-                            swap(vec[random_place1], vec[random_place2]);
-                        }
-
-                        count++;
-                    }
-                }
-    
+                float distance = tsp(adj);
                 my_res = distance;
                 
-                
-                
-                
             } //ENDS here
-
-
-            
-            
-            
             
             input.close();
         }
@@ -188,7 +205,7 @@ int main() {
         else //odd -- number
         {
             res = stof(line);
-            if (n>=101)
+            if (n>=5001)
             {
                 float lo = res*0.11;
                 float inc = lo + static_cast <float> (rand()) / (static_cast <float> (RAND_MAX/(res*0.2-lo)));
